@@ -1,0 +1,51 @@
+/* option custom */
+option[value=""] {
+    color: grey !important;
+}
+
+
+/* table custom */
+.table {
+    border: 2px solid #cacaca;
+}
+
+.table thead {
+    border: 2px solid #cacaca !important;
+    line-height: 2px;
+}
+
+.table thead th, .table td {
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: 1px solid #cacaca !important;
+    border-left: 1px solid #cacaca !important;
+}
+
+.table thead th:last-child, .table td:last-child {
+    border-top: 0px;
+    border-bottom: 0px;
+    border-right: 2px solid #cacaca !important;
+    border-left: 2px solid #cacaca !important;
+}
+
+.table tfoot {
+    border-top: 2px solid #cacaca !important;
+    background-color: #f5f9ff;
+}
+
+.table tfoot td {
+    border: 0px !important;
+}
+
+/* checkbox, button */
+.checkbox-custom {
+    height: 18px;
+    width: 18px;
+    opacity: 0.8;
+}
+
+.btn-delete, .btn-delete-multi {
+    cursor: pointer;
+}
+
+

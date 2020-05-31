@@ -1,0 +1,105 @@
+/* Global custom */
+* {
+    font-family: "Segoe UI";
+    font-size: 14pt;
+}
+
+@font-face {
+    font-family: "Segoe UI Semibold";
+    src: local("Segoe UI Semibold");
+}
+
+.font-lg {
+    font-size: 18pt !important;
+}
+
+.font-xl {
+    font-size: 22pt !important;
+}
+
+.font-segoe-ui-semibold {
+    font-family: "Segoe UI Semibold" !important;
+}
+
+
+/* Form custom */
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: grey !important;
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: grey !important;
+}
+
+.form-control.is-invalid, .was-validated .form-control:invalid {
+    padding-right: calc(1.5em + .35rem) !important;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: grey !important;
+}
+
+.form-group {
+    margin-top: 38px !important;
+    margin-bottom: 38px !important;
+}
+
+.form-control, .input-group-append {
+    background-color: white;
+    height: 30px;
+    border: 2px solid #cccccc;
+    padding: 0rem 0.75rem;
+}
+
+.col-form-label, .col-form-label .symbol-asterisk {
+    font-family: "Segoe UI Semibold" !important;
+}
+
+.col-form-label.required:after {
+    content: '*';
+    color: #d93127;
+}
+
+/* button, text custom */
+.text-grey {
+    color: grey !important;
+}
+
+.btn-gray {
+    color: #212529;
+    background-color: #e2e2e2;
+    border-color: #e2e2e2;
+}
+
+.btn-gray:hover {
+    color: #212529;
+    background-color: #d9d9d9;
+    border-color: #d9d9d9;
+}
+
+
+/* ng-select custom */
+ng-select .ng-select-container {
+    border: 2px solid #cccccc !important;
+    min-height: 20px !important;
+}
+
+.ng-value-label {
+    background-color: #e2e2e2;
+}
+
+.ng-value-icon {
+    background-color: #e2e2e2;
+    border-left: 1px solid #cecece !important;
+    font-weight: bold;
+}
+
+ng-select .ng-arrow-wrapper {
+    display: none;
+}
+
+ng-select .ng-clear-wrapper {
+    font-weight: bold;
+}
+

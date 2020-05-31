@@ -1,0 +1,8 @@
+.navbar {
+    padding-left: 9rem !important;
+    padding-right: 9rem !important;
+}
+
+.btn-change-language {
+    cursor: pointer;
+}

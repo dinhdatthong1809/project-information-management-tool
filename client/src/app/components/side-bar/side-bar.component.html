@@ -1,0 +1,18 @@
+<nav id="sidebarMenu" class="row sidebar navbar-collapse bg-light">
+    <div class="mt-4 pl-5">
+
+        <ul *ngFor="let menuGroup of menuGroups" class="nav mb-3">
+            <li class="nav-item col-sm-12">
+                <a [routerLink]="menuGroup.header.url" class="nav-link text-primary font-lg font-segoe-ui-semibold" routerLinkActive="font-weight-bold">
+                    {{menuGroup.header.name | translate}}
+                </a>
+            </li>
+            <li *ngFor="let item of menuGroup.items" class="nav-item col-sm-12 font-segoe-ui-semibold">
+                <a class="nav-link text-secondary" [routerLink]="item.url" routerLinkActive="font-weight-bold">
+                    {{item.name | translate}}
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</nav>

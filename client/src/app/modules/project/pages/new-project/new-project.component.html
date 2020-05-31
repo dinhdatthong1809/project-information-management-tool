@@ -1,0 +1,195 @@
+<div class="container-fluid p-0">
+    <div class="mb-3 text-secondary font-lg font-segoe-ui-semibold">{{i18nLabels.NEW_PROJECT | translate}}</div>
+</div>
+
+<div class="container-fluid border-top pl-0 pr-0 border-bottom">
+
+    <div *ngIf="submitted && !this.newProjectForm.valid || isExistedProjectNumber">
+        <div class="alert alert-danger alert-dismissible fade show mt-1" role="alert">
+            {{i18nLabels.PLEASE_ENTER_ALL_THE_MANDATORY_FIELDS | translate}} (*)
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true" style="font-size: 1.5rem">&times;</span>
+            </button>
+        </div>
+    </div>
+
+    <form [formGroup]="newProjectForm" (ngSubmit)="onSubmitNewProjectForm()" id="newProjectForm" class="pl-lg-5 pr-0 my-3">
+
+        <div class="form-group row d-flex align-items-center">
+            <label class="col-xs-12 col-lg-3 col-form-label text-secondary required">
+                {{i18nLabels.PROJECT_NUMBER | translate}}
+            </label>
+            <div class="col-xs-12 col-lg-3">
+                <input formControlName="projectNumber"
+                       min="1"
+                       [max]="maxProjectNumber"
+                       type="number"
+                       class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && (getForm.projectNumber.errors || isExistedProjectNumber)}"
+                />
+                <div *ngIf="submitted && getForm.projectNumber.errors" class="invalid-feedback text-nowrap">
+                    <div *ngIf="getForm.projectNumber.errors.min">Project number is positive</div>
+                    <div *ngIf="getForm.projectNumber.errors.max">Project number is over maximum</div>
+                </div>
+            </div>
+            <div *ngIf="submitted && isExistedProjectNumber" class="text-danger text-nowrap col-xs-12 col-lg-6">
+                {{i18nLabels.THE_PROJECT_NUMBER_ALREADY_EXISTED_PLEASE_SELECT_A_DIFFERENT_PROJECT_NUMBER | translate}}
+            </div>
+        </div>
+
+        <div class="form-group row d-flex align-items-center">
+            <label class="col-xs-12 col-lg-3 col-form-label text-secondary required">
+                {{i18nLabels.PROJECT_NAME | translate}}
+            </label>
+            <div class="col-xs-12 col-lg-9">
+                <input formControlName="name"
+                       maxlength="50"
+                       class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && getForm.name.errors }"
+                />
+                <div *ngIf="submitted && getForm.name.errors" class="invalid-feedback text-nowrap">
+                    <div *ngIf="getForm.name.errors.maxlength">Project name has less than 50 characters</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row d-flex align-items-center">
+            <label class="col-xs-12 col-lg-3 col-form-label text-secondary required">
+                {{i18nLabels.CUSTOMER | translate}}
+            </label>
+            <div class="col-xs-12 col-lg-9">
+                <input formControlName="customer"
+                       maxlength="50"
+                       class="form-control"
+                       [ngClass]="{ 'is-invalid': submitted && getForm.customer.errors }"
+                />
+                <div *ngIf="submitted && getForm.customer.errors" class="invalid-feedback text-nowrap">
+                    <div *ngIf="getForm.customer.errors.maxlength">Customer has less than 50 characters</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row d-flex align-items-center">
+            <label class="col-xs-12 col-lg-3 col-form-label text-secondary required">
+                {{i18nLabels.GROUP | translate}}
+            </label>
+            <div class="col-xs-12 col-lg-3">
+                <select formControlName="companyGroupId"
+                        class="form-control"
+                        [ngClass]="{ 'is-invalid': submitted && getForm.companyGroupId.errors }"
+                >
+                    <option value="">{{i18nLabels.CHOOSE_GROUP | translate}}</option>
+                    <option *ngFor="let group of groups" [ngValue]="group.id">{{group.name}}</option>
+                </select>
+                <div *ngIf="submitted && getForm.companyGroupId.errors" class="invalid-feedback text-nowrap">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row d-flex align-items-center">
+            <label for="members" class="col-xs-12 col-lg-3 col-form-label text-secondary">
+                {{i18nLabels.MEMBERS | translate}}
+            </label>
+            <div class="col-xs-12 col-lg-9">
+                <ng-select
+                    class=""
+                    formControlName="projectEmployees"
+                    bindLabel="name"
+                    bindValue="id"
+                    labelForId="members"
+                    appendTo="body"
+                    [items]="employees"
+                    [multiple]="true"
+                >
+                    <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                        <span class="ng-value-label rounded-left">{{(item.visa + ": " + item.name) | uppercase}}</span>
+                        <span class="ng-value-icon right rounded-right" (click)="clear(item)">×</span>
+                    </ng-template>
+
+                    <ng-template ng-option-tmp let-item="item">
+                        <span>{{item.visa + ": " + item.name}}</span>
+                    </ng-template>
+                </ng-select>
+            </div>
+        </div>
+
+        <div class="form-group row d-flex align-items-center">
+            <label class="col-xs-12 col-lg-3 col-form-label text-secondary required">
+                {{i18nLabels.STATUS | translate}}
+            </label>
+            <div class="col-xs-12 col-lg-3">
+                <select formControlName="status"
+                        class="form-control"
+                >
+                    <option *ngFor="let status of statuses" [ngValue]="status.id">{{status.description}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row d-flex align-items-center">
+            <label class="col-xs-12 col-lg-3 col-form-label text-secondary text-nowrap required">
+                {{i18nLabels.START_DATE | translate}}
+            </label>
+            <div class="input-group col-xs-12 col-lg-3">
+                <input formControlName="startDate"
+                       ngbDatepicker
+                       class="form-control border-right-0"
+                       #startDate="ngbDatepicker"
+                       [ngClass]="{ 'is-invalid': submitted && getForm.startDate.errors }"
+                />
+                <div class="input-group-append rounded-right border-left-0 p-0">
+                    <button class="bg-white btn px-1 py-0 d-flex align-items-center text-secondary" (click)="startDate.toggle()" type="button">
+                        <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-1"></div>
+
+            <label class="col-xs-12 col-lg-2 col-form-label text-secondary text-nowrap">
+                {{i18nLabels.END_DATE | translate}}
+            </label>
+            <div class="input-group col-xs-12 col-lg-3">
+                <input formControlName="endDate"
+                       ngbDatepicker
+                       class="form-control border-right-0"
+                       #endDate="ngbDatepicker"
+                       [ngClass]="{ 'is-invalid': submitted && getForm.endDate.errors }"
+                />
+                <div class="input-group-append rounded-right border-left-0 p-0">
+                    <button class="bg-white btn px-1 py-0 d-flex align-items-center text-secondary" (click)="endDate.toggle()" type="button">
+                        <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="form-group row">
+    <div class="col-lg-6 col-xs-12">
+
+    </div>
+    <div class="col-lg-6 col-xs-12 d-lg-flex justify-content-lg-between">
+        <button form="newProjectForm"
+                (click)="resetForm()"
+                type="reset"
+                class="btn btn-gray col-xs-12 col-lg-5 font-weight-bold mb-3 mb-lg-0"
+        >
+            {{i18nLabels.CANCEL | translate}}
+        </button>
+
+        <button form="newProjectForm"
+                class="btn btn-primary col-xs-12 col-lg-5 font-weight-bold"
+        >
+            {{i18nLabels.CREATE_PROJECT | translate}}
+        </button>
+    </div>
+</div>

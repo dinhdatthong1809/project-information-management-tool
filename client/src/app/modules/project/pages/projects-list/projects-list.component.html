@@ -1,0 +1,102 @@
+<div class="container-fluid p-0">
+    <div class="mb-3 text-secondary font-lg font-segoe-ui-semibold">{{i18nLabels.PROJECTS_LIST | translate}}</div>
+</div>
+
+<div class="container-fluid border-top">
+    <form [formGroup]="filterProjectForm" (ngSubmit)="onSubmitFilterProjectForm()" class="row form-group px-0 my-3 d-flex align-items-center">
+        <input formControlName="keyword"
+               class="form-control col-lg-4 mr-lg-4 mb-3 mb-lg-0"
+               [placeholder]="i18nLabels.KEYWORD_PLACE_HOLDER | translate"
+        />
+
+        <select formControlName="status"
+                class="form-control col-lg-2 mr-lg-5 mb-3 mb-lg-0"
+                [ngClass]="{'text-grey': getForm.status.value === ''}"
+        >
+            <option value="">{{i18nLabels.PROJECT_STATUS_PLACE_HOLDER | translate}}</option>
+            <option *ngFor="let status of statuses"
+                    [ngValue]="status.id"
+                    class="text-dark"
+            >
+                {{status.description}}
+            </option>
+        </select>
+
+        <button type="submit" class="btn btn-primary col-lg-2 mb-3 mb-lg-0">
+            {{i18nLabels.SEARCH_PROJECT | translate}}
+        </button>
+        <button (click)="resetForm()" class="btn text-primary col-lg-2 mr-lg-2 mb-3 mb-lg-0">
+            {{i18nLabels.RESET_SEARCH | translate}}
+        </button>
+    </form>
+</div>
+
+<table class="table bg-white table-responsive-md table-hover">
+    <thead>
+    <tr>
+        <th></th>
+        <th class="text-secondary">{{i18nLabels.NUMBER | translate}}</th>
+        <th class="text-secondary">{{i18nLabels.NAME | translate}}</th>
+        <th class="text-secondary">{{i18nLabels.STATUS | translate}}</th>
+        <th class="text-secondary">{{i18nLabels.CUSTOMER | translate}}</th>
+        <th class="text-secondary text-nowrap">{{i18nLabels.START_DATE | translate}}</th>
+        <th class="text-secondary">{{i18nLabels.DELETE | translate}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let project of projects | sortBy: 'asc':'projectNumber'">
+        <td class="align-middle text-center" style="width: 5%;">
+            <input type="checkbox"
+                   class="checkbox-custom"
+                   *ngIf="project.status.id === 'NEW'"
+                   (change)="selectProject($event, project.id)"
+                   [checked]="selectedIds.includes(project.id)"
+            />
+        </td>
+        <td class="align-middle text-right" style="width: 5%;">
+            <a [routerLink]="getDetailLink(project.projectNumber)">
+                {{project.projectNumber}}
+            </a>
+        </td>
+        <td class="align-middle" style="width: 30%;">{{project.name}}</td>
+        <td class="align-middle" style="width: 20%;">{{project.status.description}}</td>
+        <td class="align-middle" style="width: 20%;">{{project.customer}}</td>
+        <td class="align-middle" style="width: 15%;">{{project.startDate | date: 'dd.MM.yyyy'}}</td>
+        <td class="align-middle text-center" style="width: 5%;">
+            <div *ngIf="project.status.id === 'NEW'" class="btn-delete" (click)="askBeforeDeleteOne(project)">
+                <svg class="bi bi-trash-fill text-danger" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                </svg>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot *ngIf="selectedIds.length > 0">
+        <tr class="border-top">
+            <td colspan="7">
+                <div class="d-flex justify-content-between">
+                    <div class="text-primary">
+                        {{selectedIds.length}} items selected
+                    </div>
+                    <div class="btn-delete-multi text-danger pr-3" (click)="askBeforeDeleteMulti()">
+                        delete selected items
+                        <svg class="bi bi-trash-fill text-danger" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                        </svg>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="d-flex justify-content-end">
+    <ngb-pagination [collectionSize]="totalProject"
+                    [(page)]="page"
+                    [pageSize]="chunk"
+                    [maxSize]="5"
+                    [rotate]="true"
+                    (pageChange)="goToPage($event)"
+    >
+    </ngb-pagination>
+</div>
