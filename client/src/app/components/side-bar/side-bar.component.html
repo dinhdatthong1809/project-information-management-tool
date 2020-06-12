@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li *ngFor="let item of menuGroup.items" class="nav-item col-sm-12 font-segoe-ui-semibold">
-                <a class="nav-link text-secondary" [routerLink]="item.url" routerLinkActive="font-weight-bold">
+                <a class="nav-link text-secondary" [routerLink]="item.url" routerLinkActive="font-weight-bold" [ngClass]="{'disabled': item.disabled}">
                     {{item.name | translate}}
                 </a>
             </li>

@@ -1,5 +1,17 @@
 import {ProjectEmployee} from "./project-employee";
-import {ProjectStatusDTO} from "../modules/services/dto/project-status-dto";
+import {ProjectStatusDto} from "../modules/services/dto/project-status-dto";
+
+export enum ProjectStatus {
+
+    NEW = "NEW",
+
+    PLA = "PLA",
+
+    INP = "INP",
+
+    FIN = "FIN"
+
+}
 
 export class Project {
 
@@ -13,7 +25,7 @@ export class Project {
 
     customer: string;
 
-    status: string | ProjectStatusDTO;
+    status: string | ProjectStatusDto;
 
     startDate: string;
 

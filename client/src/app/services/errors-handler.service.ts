@@ -1,26 +1,25 @@
 import {ErrorHandler, Injectable} from '@angular/core';
-import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AlertHelper} from "../helpers/alert-helper";
 import * as HttpStatus from "http-status-codes";
 import {AppUrl} from "../constants/app-url";
+import {AlertService} from "../modules/services/alert.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ErrorsHandlerService implements ErrorHandler {
 
-    constructor(private router: Router) {
+    constructor(private _alertService: AlertService) {
 
     }
 
     handleError(error: any): void {
-        if (error === null) {
+        if (!error) {
             return;
         }
 
         if (error instanceof ErrorEvent) {
-            AlertHelper.error("Error has occurred in client");
+            this._alertService.error("Error has occurred in client");
             return;
         }
 
@@ -37,7 +36,7 @@ export class ErrorsHandlerService implements ErrorHandler {
                 return;
             }
 
-            AlertHelper.error(error.error.message);
+            this._alertService.error(error.error.message);
             return;
         }
 

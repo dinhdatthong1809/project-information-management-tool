@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.format.annotation.DateTimeFormat;
+import vn.elca.training.tdd.constants.DateFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,30 +26,23 @@ public class Employee extends AbstractEntity {
     
     @NotNull
     @Column(unique = true)
-    @Size(max = 3)
+    @Size(min = 1, max = 3)
     private String visa;
     
     @NotNull
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     private String firstName;
     
     @NotNull
-    @Size(max = 50)
+    @Size(min = 1, max = 50)
     private String lastName;
     
     @NotNull
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = DateFormat.APP_PATTERN)
     private LocalDate birthDate;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn
+    @JoinColumn(name = "employeeId")
     private List<ProjectEmployee> projectEmployees = new ArrayList<>();
-    
-    public Employee(Long id, String visa, String firstName, String lastName) {
-        this.id = id;
-        this.visa = visa;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
     
 }

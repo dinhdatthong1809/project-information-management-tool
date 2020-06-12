@@ -3,11 +3,13 @@ package vn.elca.training.tdd.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.elca.training.tdd.dom.Project;
 import vn.elca.training.tdd.dom.enums.ProjectStatus;
-import vn.elca.training.tdd.dto.ProjectTableRowDTO;
+import vn.elca.training.tdd.dto.ProjectDeleteDto;
+import vn.elca.training.tdd.dto.ProjectTableRowDto;
 import vn.elca.training.tdd.service.IProjectService;
 
 import java.util.List;
@@ -19,9 +21,9 @@ public class ProjectController {
     @Autowired
     private IProjectService projectService;
     
-    @GetMapping(value = "", params = {"keyword", "status", "chunk", "page"})
-    public ResponseEntity<Page<ProjectTableRowDTO>> findAChunkInPageWithKeywordAndStatus(String keyword, String status, int chunk, int page) {
-        return projectService.findAChunkInPageWithKeywordAndStatus(keyword, status, chunk, page);
+    @GetMapping(value = "", params = {"keyword", "status", "chunk", "page", "order"})
+    public ResponseEntity<Page<ProjectTableRowDto>> findAChunkInPageWithKeywordAndStatus(String keyword, String status, int chunk, int page, Sort.Order order) {
+        return projectService.findSortedChunkInPageWithKeywordAndStatus(keyword, status, chunk, page, order);
     }
     
     @GetMapping("statuses")
@@ -45,8 +47,8 @@ public class ProjectController {
     }
     
     @DeleteMapping("")
-    public ResponseEntity deleteByIds(@RequestBody Long[] ids) {
-        return projectService.deleteByIds(ids);
+    public ResponseEntity deleteByIds(@RequestBody ProjectDeleteDto[] projectDeleteDtos) {
+        return projectService.deleteByIds(projectDeleteDtos);
     }
     
 }

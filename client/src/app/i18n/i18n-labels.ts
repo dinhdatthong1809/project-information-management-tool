@@ -11,19 +11,24 @@ export const APP_LANGUAGES: string[] = Object.keys(Language);
 export const DEFAULT_LANGUAGE = Object.keys(Language)[0];
 
 export const I18N_DATE_DICTIONARY = {
+
     en: {
         weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
         months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
+
     fr: {
         weekdays: ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'],
         months: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc']
     }
+
 };
 
 export class I18nLabels {
 
     static readonly APP_TITLE: string = "appTitle";
+
+    static readonly ARE_YOU_SURE: string = "areYouSure";
 
     static readonly CANCEL: string = "cancel";
 
@@ -33,7 +38,11 @@ export class I18nLabels {
 
     static readonly CUSTOMER: string = "customer";
 
+    static readonly CUSTOMER_HAS_LESS_THAN_50_CHARACTERS: string = "customerHasLessThan50Characters";
+
     static readonly DELETE: string = "delete";
+
+    static readonly DELETED_SUCCESSFULLY: string = "deletedSuccessfully";
 
     static readonly EDIT_PROJECT_INFORMATION: string = "editProjectInformation";
 
@@ -63,7 +72,15 @@ export class I18nLabels {
 
     static readonly PROJECT_NAME: string = "projectName";
 
+    static readonly PROJECT_NAME_HAS_BEEN_SAVED: string = "projectNameHasBeenSaved";
+
+    static readonly PROJECT_NAME_HAS_LESS_THAN_50_CHARACTERS: string = "projectNameHasLessThan50Characters";
+
     static readonly PROJECT_NUMBER: string = "projectNumber";
+
+    static readonly PROJECT_NUMBER_IS_OVER_MAXIMUM: string = "projectNumberIsOverMaximum";
+
+    static readonly PROJECT_NUMBER_IS_POSITIVE: string = "projectNumberIsPositive";
 
     static readonly PROJECT_STATUS_PLACE_HOLDER: string = "projectStatusPlaceHolder";
 
@@ -81,6 +98,12 @@ export class I18nLabels {
 
     static readonly THE_PROJECT_NUMBER_ALREADY_EXISTED_PLEASE_SELECT_A_DIFFERENT_PROJECT_NUMBER: string = "theProjectNumberAlreadyExistedPleaseSelectADifferentProjectNumber";
 
-    static readonly PROJECT_NAME_HAS_BEEN_SAVED: string = "projectNameHasBeenSaved";
+    static readonly UPDATE_PROJECT: string = "updateProject";
+
+    static readonly YES: string = "yes";
+
+    static readonly YOU_WILL_DELETE_PROJECT_NAME: string = "youWillDeleteProjectName";
+
+    static readonly YOU_WILL_DELETE_SELECTED_PROJECTS: string = "youWillDeleteSelectedProjects";
 
 }

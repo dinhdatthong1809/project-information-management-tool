@@ -11,7 +11,7 @@ public class ApplicationController {
     
     @RequestMapping("")
     public ResponseEntity<ApiResponse> index() {
-        ApiResponse apiResponse = new ApiResponse(HttpStatus.OK, "Welcome to ELCA");
+        ApiResponse apiResponse = new ApiResponse(HttpStatus.OK.value(), HttpStatus.OK, "Welcome to PIM Tool");
         
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }

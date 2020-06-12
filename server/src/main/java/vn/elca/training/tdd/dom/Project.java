@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.format.annotation.DateTimeFormat;
+import vn.elca.training.tdd.abstracts.Sortable;
+import vn.elca.training.tdd.constants.DateFormat;
 import vn.elca.training.tdd.dom.enums.ProjectStatus;
 import vn.elca.training.tdd.dom.validator.project.ProjectEndDateValid;
 
@@ -26,7 +28,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project extends AbstractEntity {
+public class Project extends AbstractEntity implements Sortable {
     
     @NotNull
     private Long companyGroupId;
@@ -50,29 +52,21 @@ public class Project extends AbstractEntity {
     private ProjectStatus status;
     
     @NotNull
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = DateFormat.APP_PATTERN)
+    @JsonFormat(pattern = DateFormat.APP_PATTERN)
     private LocalDate startDate;
     
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @DateTimeFormat(pattern = DateFormat.APP_PATTERN)
+    @JsonFormat(pattern = DateFormat.APP_PATTERN)
     private LocalDate endDate;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn
+    @JoinColumn(name = "projectId")
     private List<ProjectEmployee> projectEmployees = new ArrayList<>();
     
-    public Project(Integer projectNumber) {
-        this.projectNumber = projectNumber;
-    }
-    
-    public Project(Long id, Integer projectNumber, String name, ProjectStatus status, String customer, LocalDate startDate) {
-        this.id = id;
-        this.projectNumber = projectNumber;
-        this.name = name;
-        this.status = status;
-        this.customer = customer;
-        this.startDate = startDate;
+    @Override
+    public String[] getSortableFields() {
+        return new String[] {"projectNumber", "name", "status", "customer", "startDate"};
     }
     
 }

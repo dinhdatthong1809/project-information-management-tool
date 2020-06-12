@@ -1,4 +1,4 @@
-export class CompanyGroupDTO {
+export class CompanyGroupDto {
 
     id: number;
 

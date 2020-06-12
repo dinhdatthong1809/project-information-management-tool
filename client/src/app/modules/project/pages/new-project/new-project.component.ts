@@ -1,13 +1,12 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, ElementRef, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {CompanyGroupService} from "../../../services/services/company-group.service";
-import {CompanyGroupDTO} from "../../../services/dto/company-group-dto";
-import {ProjectStatusDTO} from "../../../services/dto/project-status-dto";
-import {ProjectService} from "../../../services/services/project.service";
-import {EmployeeService} from "../../../services/services/employee.service";
-import {EmployeeDTO} from "../../../services/dto/employee-dto";
+import {CompanyGroupService} from "../../../services/company-group.service";
+import {CompanyGroupDto} from "../../../services/dto/company-group-dto";
+import {ProjectStatusDto} from "../../../services/dto/project-status-dto";
+import {ProjectService} from "../../../services/project.service";
+import {EmployeeService} from "../../../services/employee.service";
+import {EmployeeDto} from "../../../services/dto/employee-dto";
 import {Project} from "../../../../dom/project";
-import {AlertHelper} from "../../../../helpers/alert-helper";
 import {AppConstants} from "../../../../constants/app-constants";
 import {catchError} from "rxjs/operators";
 import {Observable, throwError} from "rxjs";
@@ -17,6 +16,8 @@ import {AppUrl} from "../../../../constants/app-url";
 import {HttpErrorResponse} from "@angular/common/http";
 import {I18nLabels} from "../../../../i18n/i18n-labels";
 import {LangChangeEvent, TranslateService} from "@ngx-translate/core";
+import {AlertService} from "../../../services/alert.service";
+import {ErrorCode} from "../../../../constants/error-code";
 
 @Component({
     selector: "app-new-project",
@@ -33,40 +34,23 @@ export class NewProjectComponent implements OnInit {
     isExistedProjectNumber: boolean = false;
     maxProjectNumber: number = AppConstants.MAX_PROJECT_NUMBER;
 
-    groups: CompanyGroupDTO[] = [];
-    employees: EmployeeDTO[] = [];
-    statuses: ProjectStatusDTO[] = [];
+    groups: CompanyGroupDto[] = [];
+    employees: EmployeeDto[] = [];
+    statuses: ProjectStatusDto[] = [];
 
     constructor(
+        private _el: ElementRef,
         private _formBuilder: FormBuilder,
         private _router: Router,
         private _companyGroupService: CompanyGroupService,
         private _projectService: ProjectService,
         private _employeeService: EmployeeService,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _alertService: AlertService,
     ) {
         this._translateService.onLangChange.subscribe((event: LangChangeEvent) => {
             this.getAllProjectStatuses();
         });
-    }
-
-    ngOnInit(): void {
-        this.initForm();
-
-        this.getAllEmployees();
-        this.getAllProjectStatuses();
-        this.getAllGroups();
-    }
-
-    get getForm() {
-        return this.newProjectForm.controls;
-    }
-
-    resetForm() {
-        this.submitted = false;
-        this.isExistedProjectNumber = false;
-
-        this._router.navigate([AppUrl.PROJECT_LIST]);
     }
 
     private initForm(): void {
@@ -93,6 +77,27 @@ export class NewProjectComponent implements OnInit {
                 endDate: []
             }
         );
+
+        this._el.nativeElement.querySelector("input[autofocus]").focus();
+    }
+
+    ngOnInit(): void {
+        this.initForm();
+
+        this.getAllEmployees();
+        this.getAllProjectStatuses();
+        this.getAllGroups();
+    }
+
+    get getForm() {
+        return this.newProjectForm.controls;
+    }
+
+    resetForm() {
+        this.submitted = false;
+        this.isExistedProjectNumber = false;
+
+        this._router.navigate([AppUrl.PROJECT_LIST]);
     }
 
     onSubmitNewProjectForm(): void {
@@ -112,7 +117,7 @@ export class NewProjectComponent implements OnInit {
                 this._translateService
                     .get(this.i18nLabels.PROJECT_NAME_HAS_BEEN_SAVED, {name: project.name})
                     .subscribe((text: string) => {
-                        AlertHelper.success(text);
+                        this._alertService.success(text);
                         this._router.navigate([AppUrl.PROJECT_LIST]);
                     });
             });
@@ -121,7 +126,8 @@ export class NewProjectComponent implements OnInit {
     getAllGroups(): void {
         this._companyGroupService
             .findAll()
-            .subscribe((data: CompanyGroupDTO[]) => {
+            .subscribe((data: CompanyGroupDto[]) => {
+                this._alertService.close();
                 this.groups = data;
             });
     }
@@ -129,7 +135,8 @@ export class NewProjectComponent implements OnInit {
     getAllProjectStatuses(): void {
         this._projectService
             .findAllProjectStatuses()
-            .subscribe((data: ProjectStatusDTO[]) => {
+            .subscribe((data: ProjectStatusDto[]) => {
+                this._alertService.close();
                 this.statuses = data;
                 this.getForm.status.setValue(this.statuses[0].id);
             });
@@ -139,14 +146,23 @@ export class NewProjectComponent implements OnInit {
     getAllEmployees(): void {
         this._employeeService
             .findAll()
-            .subscribe((data: EmployeeDTO[]) => {
+            .subscribe((data: EmployeeDto[]) => {
+                this._alertService.close();
                 this.employees = data;
             });
     }
 
+    getMemberBoxLabel(employeeDto: EmployeeDto): string {
+        return employeeDto.visa + ": " + employeeDto.name;
+    }
+
     handleError(error: HttpErrorResponse): Observable<never> {
         if (error.status === HttpStatus.UNPROCESSABLE_ENTITY) {
-            this.isExistedProjectNumber = true;
+            if (error.error.code === ErrorCode.PROJECT_NUMBER_EXISTED) {
+                this.isExistedProjectNumber = true;
+            }
+
+            this._alertService.close();
             return throwError(null);
         }
 

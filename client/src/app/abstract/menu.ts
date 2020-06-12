@@ -4,6 +4,8 @@ export interface MenuItem {
 
     url: string;
 
+    disabled?: boolean;
+
 }
 
 export interface MenuGroup {

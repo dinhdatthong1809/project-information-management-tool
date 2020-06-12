@@ -38,7 +38,7 @@ public enum ProjectStatus {
     }
     
     public String getDescription() {
-        return TranslateHelper.toLocale(description);
+        return TranslateHelper.toLocale(this.description);
     }
     
     public void setDescription(String description) {

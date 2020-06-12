@@ -17,6 +17,7 @@ export class CustomNgbDateAdapterService extends NgbDateAdapter<string> {
                 year: parseInt(date[2])
             };
         }
+
         return null;
     }
 

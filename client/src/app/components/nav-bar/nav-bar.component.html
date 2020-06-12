@@ -1,10 +1,6 @@
 <nav class="navbar navbar-light navbar-expand-lg border-bottom bg-light px-5">
     <div class="container-fluid">
 
-        <button class="navbar-toggler ml-5" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         <a class="navbar-brand d-flex align-items-center ml-5" routerLink="/">
             <img src="assets/images/logo_elca.png" class="d-inline-block align-top mr-5">
             <span class="text-secondary font-weight-bold font-xl text-wrap">{{i18nLabels.APP_TITLE | translate}}</span>
@@ -14,29 +10,33 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <button class="navbar-toggler ml-5" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <div class="navbar-collapse collapse mr-5" id="dropDownMenu">
             <ul class="navbar-nav ml-auto row">
-                <li class="nav-item ml-5 mr-5 text-nowrap">
-                    <ng-template ngFor let-language [ngForOf]="applanguages" let-i="index" let-last="last">
+                <div class="nav-item ml-5 mr-5 text-nowrap">
+                    <ng-template ngFor let-language [ngForOf]="appLanguages" let-i="index" let-last="last">
                         <a class="nav-link d-inline-block font-weight-bold btn-change-language"
                            (click)="changeLanguage(language)"
                            [ngClass]="{'text-primary': language === getCurrentLanguage()}"
                         >
                             {{language | uppercase}}
                         </a>
-                        <span *ngIf="!last">|</span>
+                        <span *ngIf="!last"> | </span>
                     </ng-template>
-                </li>
+                </div>
 
                 <li *ngFor="let item of items" class="nav-item ml-5 text-nowrap">
                     <a [routerLink]="item.url"
-                       class="nav-link font-weight-bold disabled"
+                       class="nav-link font-weight-bold"
+                       [ngClass]="{'disabled': item.disabled}"
                     >
                         {{item.name | translate}}
                     </a>
                 </li>
             </ul>
-
         </div>
     </div>
 </nav>

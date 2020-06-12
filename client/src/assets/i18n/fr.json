@@ -1,10 +1,13 @@
 {
     "appTitle": "Gestion Information Projet",
+    "areYouSure": "êtes-vous sûr",
     "cancel": "Annuler",
     "chooseGroup": "Choisissez groupe",
     "createProject": "Créer un projet",
     "customer": "Cliente",
+    "customerHasLessThan50Characters": "Le client compte moins de 50 caractères",
     "delete": "Supprimer",
+    "deletedSuccessfully": "Supprimé avec succès",
     "editProjectInformation": "Modifier les informations du projet",
     "endDate": "Date de début",
     "group": "Groupe",
@@ -20,7 +23,10 @@
     "project": "Projet",
     "projectName": "Nom du projet",
     "projectNameHasBeenSaved": "Le projet <strong>{{name}}</strong> a été enregistré",
+    "projectNameHasLessThan50Characters": "Le nom du projet comporte moins de 50 caractères",
     "projectNumber": "Numéro de projet",
+    "projectNumberIsOverMaximum": "Le numéro de projet est supérieur au maximum",
+    "projectNumberIsPositive": "Le numéro de projet est positif",
     "projectStatusPlaceHolder": "L'état projet",
     "projectsList": "Liste des projets",
     "resetSearch": "Réinitialiser recherche",
@@ -28,5 +34,9 @@
     "startDate": "Date de début",
     "status": "Statut",
     "supplier": "Fournisseur",
-    "theProjectNumberAlreadyExistedPleaseSelectADifferentProjectNumber": "Le numéro de projet existait déjà. Veuillez sélectionner un autre numéro de projet"
+    "theProjectNumberAlreadyExistedPleaseSelectADifferentProjectNumber": "Le numéro de projet existait déjà. Veuillez sélectionner un autre numéro de projet",
+    "updateProject": "Mettre projet",
+    "yes": "Oui",
+    "youWillDeleteProjectName": "Vous supprimerez le projet <strong>{{name}}</strong>",
+    "youWillDeleteSelectedProjects": "Vous supprimerez les projets sélectionnés"
 }

@@ -17,6 +17,7 @@ export class CustomNgbDateParserFormatterService extends NgbDateParserFormatter 
                 year : parseInt(date[2])
             };
         }
+
         return null;
     }
 

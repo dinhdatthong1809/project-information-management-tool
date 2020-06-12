@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.elca.training.tdd.dto.CompanyGroupDTO;
+import vn.elca.training.tdd.dto.CompanyGroupDto;
 import vn.elca.training.tdd.repository.ICompanyGroupRepository;
 
 import java.util.List;
@@ -19,16 +19,16 @@ public class CompanyGroupService implements ICompanyGroupService {
     private ICompanyGroupRepository companyGroupRepository;
     
     @Override
-    public ResponseEntity<List<CompanyGroupDTO>> queryByIdAndGroupLeaderVisa() {
+    public ResponseEntity<List<CompanyGroupDto>> queryByIdAndGroupLeaderVisa() {
         
         // @formatter:off
-        List<CompanyGroupDTO> companyGroupDTOS = companyGroupRepository.findAllWithIdAndGroupLeaderVisa()
+        List<CompanyGroupDto> companyGroupDtos = companyGroupRepository.findAllWithIdAndGroupLeaderVisa()
                                                                        .stream()
-                                                                       .map(CompanyGroupDTO::new)
+                                                                       .map(CompanyGroupDto::new)
                                                                        .collect(Collectors.toList());
         // @formatter:on
         
-        return new ResponseEntity<>(companyGroupDTOS, HttpStatus.OK);
+        return new ResponseEntity<>(companyGroupDtos, HttpStatus.OK);
     }
     
 }

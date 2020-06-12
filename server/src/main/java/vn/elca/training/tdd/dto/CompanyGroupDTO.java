@@ -1,16 +1,16 @@
 package vn.elca.training.tdd.dto;
 
-import lombok.Getter;
+import lombok.Data;
 import vn.elca.training.tdd.dom.CompanyGroup;
 
-@Getter
-public class CompanyGroupDTO {
+@Data
+public class CompanyGroupDto {
     
     private Long id;
     
     private String name;
     
-    public CompanyGroupDTO(CompanyGroup companyGroup) {
+    public CompanyGroupDto(CompanyGroup companyGroup) {
         this.id = companyGroup.getId();
         this.name = companyGroup.getGroupLeader().getVisa();
     }

@@ -1,4 +1,4 @@
-export class ProjectStatusDTO {
+export class ProjectStatusDto {
 
     id: string;
 

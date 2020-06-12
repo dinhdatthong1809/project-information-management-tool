@@ -1,16 +1,20 @@
 package vn.elca.training.tdd.repository.custom.project;
 
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import vn.elca.training.tdd.dom.Project;
 import vn.elca.training.tdd.dom.QProject;
 import vn.elca.training.tdd.dom.enums.ProjectStatus;
+import vn.elca.training.tdd.exception.project.ProjectConcurrentUpdateException;
 import vn.elca.training.tdd.helpers.NumberHelper;
 
 import javax.persistence.EntityManager;
@@ -27,40 +31,45 @@ public class IProjectRepositoryCustomImpl implements IProjectRepositoryCustom {
     // @formatter:off
     
     @Override
-    public Page<Project> findAChunkInPageWithKeywordAndStatus(String keyword, String status, Pageable pageable) {
+    public Page<Project> findSortedChunkInPageWithKeywordAndStatus(String keyword, String status, Pageable pageable, Sort.Order order) {
     
-        // prepare where clause predicate: if keyword is integer, query by projectNumber, else, query by name and customer
         BooleanExpression whereClausePredicate;
         
         if (NumberHelper.isInteger(keyword)) {
             whereClausePredicate = project.projectNumber.eq(Integer.parseInt(keyword));
-            
         } else {
             whereClausePredicate = project.name.containsIgnoreCase(keyword)
                                    .or(project.customer.containsIgnoreCase(keyword));
         }
     
-        // prepare status predicate: if status is empty, query all status
-        Predicate statusPredicate = status.isEmpty() ? null
-                                                     : project.status.stringValue().eq(status);
+        whereClausePredicate = whereClausePredicate
+                               .and(
+                                   (status == null) || ("".equals(status)) ? null
+                                                                           : project.status.stringValue().eq(status)
+                               );
         
+        PathBuilder orderByExpression = new PathBuilder(Project.class, "project");
         
-        // prepare query statement
+        OrderSpecifier orderSpecifier = new OrderSpecifier(
+            order.isAscending() ? Order.ASC : Order.DESC,
+            orderByExpression.get(order.getProperty())
+        );
+        
         JPAQuery<Project> projectQuery = new JPAQueryFactory(entityManager)
-                                             .select(Projections.constructor(Project.class,
+                                             .select(Projections.fields(Project.class,
                                                  project.id,
                                                  project.projectNumber,
                                                  project.name,
                                                  project.status,
                                                  project.customer,
-                                                 project.startDate
+                                                 project.startDate,
+                                                 project.version
                                              ))
                                              .from(project)
                                              .where(
                                                  whereClausePredicate
-                                                 .and(statusPredicate)
                                              )
-                                             .orderBy(project.projectNumber.asc());
+                                             .orderBy(orderSpecifier);
         
         long totalProject = projectQuery.fetchCount();
         
@@ -69,18 +78,30 @@ public class IProjectRepositoryCustomImpl implements IProjectRepositoryCustom {
                                  .limit(pageable.getPageSize())
                                  .fetch();
         
-        
         return new PageImpl<>(projects, pageable, totalProject);
     }
     
     @Override
-    public void deleteByIds(Long[] ids) {
-        new JPAQueryFactory(entityManager)
-            .delete(project)
-            .where(
-                project.id.in(ids)
-                .and(project.status.eq(ProjectStatus.NEW)))
-            .execute();
+    public void deleteByIds(List<Project> projects) {
+        for (Project project : projects) {
+            Project projectInDatabase = new JPAQueryFactory(entityManager)
+                                            .selectFrom(this.project)
+                                            .where(this.project.id.eq(project.getId()))
+                                            .fetchFirst();
+            
+            if (project.getVersion() != projectInDatabase.getVersion()) {
+                throw new ProjectConcurrentUpdateException(project.getProjectNumber());
+            }
+            
+            projectInDatabase.getProjectEmployees().clear();
+            
+            new JPAQueryFactory(entityManager)
+                .delete(this.project)
+                .where(
+                    this.project.id.in(projectInDatabase.getId())
+                    .and(this.project.status.eq(ProjectStatus.NEW)))
+                .execute();
+        }
     }
     
     @Override
@@ -93,7 +114,7 @@ public class IProjectRepositoryCustomImpl implements IProjectRepositoryCustom {
                                    .where(project.projectNumber.eq(projectNumber))
                                    .fetchResults()
                                    .isEmpty();
-        
+    
         return !isNotExisted;
     }
     

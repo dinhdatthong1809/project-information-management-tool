@@ -3,7 +3,9 @@ package vn.elca.training.tdd.repository.custom.companygroup;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import vn.elca.training.tdd.dom.CompanyGroup;
+import vn.elca.training.tdd.dom.Project;
 import vn.elca.training.tdd.dom.QCompanyGroup;
+import vn.elca.training.tdd.dom.QEmployee;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

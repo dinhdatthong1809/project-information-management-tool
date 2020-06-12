@@ -3,9 +3,10 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {CommonModule} from "@angular/common";
 import {HttpClient} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {DateInputDirective} from "./directives/date-input.directive";
 
 @NgModule({
-    declarations: [],
+    declarations: [DateInputDirective],
     imports: [
         CommonModule,
         TranslateModule.forChild({
@@ -18,7 +19,8 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
     ],
     exports: [
         CommonModule,
-        TranslateModule
+        TranslateModule,
+        DateInputDirective,
     ]
 })
 export class SharedModule {

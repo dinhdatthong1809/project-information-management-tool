@@ -26,15 +26,17 @@ export class SideBarComponent implements OnInit {
             items: [
                 {
                     name: I18nLabels.PROJECT,
-                    url: `/${AppUrl.PROJECT_NEW}`
+                    url: `/${AppUrl.PROJECT_NEW}`,
                 },
                 {
                     name: I18nLabels.CUSTOMER,
-                    url: `/${AppUrl.CUSTOMER_NEW}`
+                    url: `/${AppUrl.CUSTOMER_NEW}`,
+                    disabled: true
                 },
                 {
                     name: I18nLabels.SUPPLIER,
-                    url: `/${AppUrl.SUPPLIER_NEW}`
+                    url: `/${AppUrl.SUPPLIER_NEW}`,
+                    disabled: true
                 }
             ]
         },

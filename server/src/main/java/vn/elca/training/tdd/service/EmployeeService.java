@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.elca.training.tdd.dto.EmployeeDTO;
+import vn.elca.training.tdd.dto.EmployeeDto;
 import vn.elca.training.tdd.repository.IEmployeeRepository;
 
 import java.util.List;
@@ -19,14 +19,14 @@ public class EmployeeService implements IEmployeeService {
     private IEmployeeRepository employeeRepository;
     
     @Override
-    public ResponseEntity<List<EmployeeDTO>> findAllWithIdAndVisaAndFirstNameAndlastName() {
+    public ResponseEntity<List<EmployeeDto>> findAllWithIdAndVisaAndFirstNameAndlastName() {
         // @formatter:off
-        List<EmployeeDTO> employeeDTOS = employeeRepository.findAllWithIdAndVisaAndFirstNameAndlastName()
+        List<EmployeeDto> employeeDtos = employeeRepository.findAllWithIdAndVisaAndFirstNameAndlastName()
                                                            .stream()
-                                                           .map(EmployeeDTO::new)
+                                                           .map(EmployeeDto::new)
                                                            .collect(Collectors.toList());
         // @formatter:on
-        return new ResponseEntity<>(employeeDTOS, HttpStatus.OK);
+        return new ResponseEntity<>(employeeDtos, HttpStatus.OK);
     }
     
 }

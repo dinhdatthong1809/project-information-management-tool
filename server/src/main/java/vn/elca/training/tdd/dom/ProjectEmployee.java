@@ -1,15 +1,11 @@
 package vn.elca.training.tdd.dom;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @BatchSize(size = 20)
@@ -29,11 +25,11 @@ public class ProjectEmployee {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectEmployeeId implements Serializable {
-        
+    
         private Long projectId;
-        
+    
         private Long employeeId;
-        
+    
     }
     
 }

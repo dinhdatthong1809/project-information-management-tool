@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.elca.training.tdd.dto.CompanyGroupDTO;
+import vn.elca.training.tdd.dto.CompanyGroupDto;
 import vn.elca.training.tdd.service.ICompanyGroupService;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class CompanyGroupController {
     private ICompanyGroupService companyGroupService;
     
     @GetMapping("")
-    public ResponseEntity<List<CompanyGroupDTO>> findAll() {
+    public ResponseEntity<List<CompanyGroupDto>> findAll() {
         return companyGroupService.queryByIdAndGroupLeaderVisa();
     }
 

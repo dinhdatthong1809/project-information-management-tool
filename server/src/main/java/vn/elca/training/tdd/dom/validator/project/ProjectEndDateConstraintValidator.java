@@ -41,7 +41,7 @@ public class ProjectEndDateConstraintValidator implements ConstraintValidator<Pr
         LocalDate startDate = project.getStartDate();
         
         if (!(endDate.compareTo(startDate) > 0)) {
-            customMessage(context, TranslateHelper.toLocale(I18nMessages.END_DATE_MUST_BE_AFTER_START_DATE.getKeyLanguage()));
+            customMessage(context, TranslateHelper.toLocale(I18nMessages.END_DATE_MUST_BE_AFTER_START_DATE));
             return false;
         }
         

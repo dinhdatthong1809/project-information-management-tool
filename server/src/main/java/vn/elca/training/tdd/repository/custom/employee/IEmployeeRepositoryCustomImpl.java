@@ -20,7 +20,7 @@ public class IEmployeeRepositoryCustomImpl implements IEmployeeRepositoryCustom 
     public List<Employee> findAllWithIdAndVisaAndFirstNameAndlastName() {
         // @formatter:off
         return new JPAQueryFactory(entityManager)
-                   .select(Projections.constructor(Employee.class,
+                   .select(Projections.fields(Employee.class,
                        employee.id,
                        employee.visa,
                        employee.firstName,

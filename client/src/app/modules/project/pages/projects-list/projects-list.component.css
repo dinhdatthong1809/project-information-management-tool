@@ -3,10 +3,25 @@ option[value=""] {
     color: grey !important;
 }
 
-
 /* table custom */
 .table {
     border: 2px solid #cacaca;
+}
+
+.w-5 {
+    width: 5%;
+}
+
+.w-15 {
+    width: 15%;
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.w-30 {
+    width: 30%;
 }
 
 .table thead {
@@ -15,15 +30,15 @@ option[value=""] {
 }
 
 .table thead th, .table td {
-    border-top: 0px;
-    border-bottom: 0px;
+    border-top: 0;
+    border-bottom: 0;
     border-right: 1px solid #cacaca !important;
     border-left: 1px solid #cacaca !important;
 }
 
 .table thead th:last-child, .table td:last-child {
-    border-top: 0px;
-    border-bottom: 0px;
+    border-top: 0;
+    border-bottom: 0;
     border-right: 2px solid #cacaca !important;
     border-left: 2px solid #cacaca !important;
 }
@@ -34,7 +49,11 @@ option[value=""] {
 }
 
 .table tfoot td {
-    border: 0px !important;
+    border: 0 !important;
+}
+
+th[sortable] {
+    cursor: pointer;
 }
 
 /* checkbox, button */

@@ -24,7 +24,7 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * NOT USED!!!
- * should find a way to inject component into custom validator
+ * should find a way to inject repository into custom validator
  * tried @Component on this class and failed
  *
  * */

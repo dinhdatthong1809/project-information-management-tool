@@ -17,14 +17,16 @@ export class NavBarComponent implements OnInit {
         {
             name: I18nLabels.HELP,
             url: "/",
+            disabled: true
         },
         {
             name: I18nLabels.LOG_OUT,
-            url: "/"
+            url: "/",
+            disabled: true
         }
     ];
 
-    applanguages: string[] = APP_LANGUAGES;
+    appLanguages: string[] = APP_LANGUAGES;
 
     constructor(private _translateService: TranslateService) {
 

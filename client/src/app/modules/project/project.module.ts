@@ -10,7 +10,7 @@ import {NgpSortModule} from "ngp-sort-pipe";
 import {UpdateProjectComponent} from './pages/update-project/update-project.component';
 import {AppRoutingModule} from "../../app-routing.module";
 import {SharedModule} from "../shared/shared.module";
-import {CustomDatePickerI18nService} from "../services/services/custom-date-picker-i18n.service";
+import {CustomDatePickerI18nService} from "../services/custom-date-picker-i18n.service";
 
 @NgModule({
     declarations: [NewProjectComponent, ProjectsListComponent, UpdateProjectComponent],

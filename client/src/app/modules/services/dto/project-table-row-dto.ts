@@ -1,17 +1,19 @@
-import {ProjectStatusDTO} from "./project-status-dto";
+import {ProjectStatusDto} from "./project-status-dto";
 
-export class ProjectTableRowDTO {
+export class ProjectTableRowDto {
 
-    ID: number;
+    id: number;
 
     projectNumber: number;
 
     name: string;
 
-    status: ProjectStatusDTO;
+    status: ProjectStatusDto;
 
     customer: string;
 
     startDate: Date;
+
+    version: number;
 
 }

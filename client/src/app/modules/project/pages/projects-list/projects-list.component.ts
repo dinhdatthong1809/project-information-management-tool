@@ -1,15 +1,17 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, ElementRef, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {ProjectStatusDTO} from "../../../services/dto/project-status-dto";
-import {ProjectService} from "../../../services/services/project.service";
-import {ProjectTableRowDTO} from "../../../services/dto/project-table-row-dto";
-import {AlertHelper} from "../../../../helpers/alert-helper";
-import {Project} from "../../../../dom/project";
+import {ProjectStatusDto} from "../../../services/dto/project-status-dto";
+import {ProjectService} from "../../../services/project.service";
+import {ProjectTableRowDto} from "../../../services/dto/project-table-row-dto";
 import {SweetAlertResult} from "sweetalert2";
 import {AppUrl} from "../../../../constants/app-url";
 import {I18nLabels} from "../../../../i18n/i18n-labels";
 import {SessionKeys} from "../../../../constants/session-keys";
 import {LangChangeEvent, TranslateService} from "@ngx-translate/core";
+import {ProjectDeleteDto} from "../../../services/dto/project-delete-dto";
+import {AlertService} from "../../../services/alert.service";
+import {ProjectStatus} from "../../../../dom/project";
+import {SortOrder, SortOrderType} from "../../../../enums/sort-order";
 
 @Component({
     selector: "app-projects-list",
@@ -23,31 +25,95 @@ export class ProjectsListComponent implements OnInit {
     i18nLabels = I18nLabels;
 
     filterProjectForm: FormGroup;
-    submitted: boolean = false;
 
-    projects: ProjectTableRowDTO[] = [];
+    projectTableRowDtos: ProjectTableRowDto[] = [];
 
-    statuses: ProjectStatusDTO[] = [];
-    chunk: number = 10;
+    statuses: ProjectStatusDto[] = [];
+    chunk: number = 5;
     page: number = 1;
     totalProject: number = 0;
 
-    selectedIds: number[] = [];
+    selectedProjectDeleteDtos: ProjectDeleteDto[] = [];
+
+    ProjectStatus = ProjectStatus;
+
+    currentSortField: string = "projectNumber";
+    isAscending: boolean = true;
+    sortOrder: SortOrder = new SortOrder(this.currentSortField, this.isAscending ? SortOrderType.ASC : SortOrderType.DESC);
 
     constructor(
+        private _el: ElementRef,
         private _formBuilder: FormBuilder,
         private _projectService: ProjectService,
-        private _translateService: TranslateService
+        private _translateService: TranslateService,
+        private _alertService: AlertService
     ) {
         this._translateService.onLangChange.subscribe((event: LangChangeEvent) => {
             this.getAllProjectStatuses();
+            this.onSubmitFilterProjectForm();
         });
+    }
+
+    private initForm(): void {
+        this.filterProjectForm = this._formBuilder.group({
+            keyword: [sessionStorage.getItem(SessionKeys.KEYWORD) ? sessionStorage.getItem(SessionKeys.KEYWORD) : ""],
+            status: [sessionStorage.getItem(SessionKeys.STATUS) ? sessionStorage.getItem(SessionKeys.STATUS) : ""],
+        });
+
+        this._el.nativeElement.querySelector("input[autofocus]").focus();
+    }
+
+    private getDataFromSession(key: string): string {
+        if (sessionStorage.getItem(key)) {
+            return sessionStorage.getItem(key);
+        }
+
+        return this.getForm[key].value;
+    }
+
+    private deleteProjectByIds(projectDeleteDtos: ProjectDeleteDto[]): void {
+        this._projectService
+            .deleteByIds(projectDeleteDtos)
+            .subscribe((data: any) => {
+                this._translateService
+                    .get(this.i18nLabels.DELETED_SUCCESSFULLY)
+                    .subscribe((text: string) => {
+                        this._alertService.success(text);
+                    });
+
+                this.filterSortedProjectsInChunkAndPage();
+
+                this.selectedProjectDeleteDtos = this.selectedProjectDeleteDtos
+                                                     .filter(item => {
+                                                         for (let i in projectDeleteDtos) {
+                                                             if (item.id === projectDeleteDtos[i].id) {
+                                                                 return false;
+                                                             }
+                                                         }
+
+                                                         return true;
+                                                     });
+            });
+    }
+
+    changeSortOrder(event: any): void {
+        let field = event.target.attributes.sortable.value;
+
+        if (this.currentSortField === field) {
+            this.isAscending = !this.isAscending;
+        }
+        else {
+            this.currentSortField = field;
+            this.isAscending = true;
+        }
+
+        this.filterSortedProjectsInChunkAndPage();
     }
 
     ngOnInit(): void {
         this.initForm();
 
-        this.filterProjectsInChunkAndPage();
+        this.filterSortedProjectsInChunkAndPage();
         this.getAllProjectStatuses();
     }
 
@@ -60,7 +126,6 @@ export class ProjectsListComponent implements OnInit {
     }
 
     resetForm() {
-        this.submitted = false;
         this.page = 1;
 
         for (let key in this.getForm) {
@@ -70,92 +135,84 @@ export class ProjectsListComponent implements OnInit {
         sessionStorage.setItem(SessionKeys.KEYWORD, "");
         sessionStorage.setItem(SessionKeys.STATUS, "");
 
-        this.filterProjectsInChunkAndPage();
-    }
+        this.filterSortedProjectsInChunkAndPage();
 
-    private initForm(): void {
-        this.filterProjectForm = this._formBuilder.group({
-            keyword: [sessionStorage.getItem(SessionKeys.KEYWORD) ? sessionStorage.getItem(SessionKeys.KEYWORD) : ""],
-            status: [sessionStorage.getItem(SessionKeys.STATUS) ? sessionStorage.getItem(SessionKeys.STATUS) : ""],
-        });
+        this._el.nativeElement.querySelector("input[autofocus]").focus();
     }
 
     onSubmitFilterProjectForm(): void {
-        this.submitted = true;
-
         sessionStorage.setItem(SessionKeys.KEYWORD, this.getForm.keyword.value);
         sessionStorage.setItem(SessionKeys.STATUS, this.getForm.status.value);
 
-        this.filterProjectsInChunkAndPage();
+        this.filterSortedProjectsInChunkAndPage();
     }
 
     getAllProjectStatuses(): void {
         this._projectService
             .findAllProjectStatuses()
-            .subscribe((data: ProjectStatusDTO[]) => {
+            .subscribe((data: ProjectStatusDto[]) => {
                 this.statuses = data;
             });
     }
 
-    filterProjectsInChunkAndPage(): void {
-        let keyword: string = this.getDataFromSession("keyword");
-        let status: string = this.getDataFromSession("status");
+    filterSortedProjectsInChunkAndPage(): void {
+        let keyword: string = this.getDataFromSession(SessionKeys.KEYWORD);
+        let status: string = this.getDataFromSession(SessionKeys.STATUS);
+        this.sortOrder = new SortOrder(this.currentSortField, this.isAscending ? SortOrderType.ASC : SortOrderType.DESC);
 
         this._projectService
-            .filterWithKeywordAndStatusInChunkAndPage(keyword, status, this.chunk, this.page)
+            .findSortedChunkInPageWithKeywordAndStatus(keyword, status, this.chunk, this.page, this.sortOrder)
             .subscribe((data: any) => {
-                this.projects = data.content;
+                this.projectTableRowDtos = data.content;
                 this.totalProject = data.totalElements;
             });
     }
 
-    private getDataFromSession(key: string): string {
-        if (sessionStorage.getItem(key)) {
-            return sessionStorage.getItem(key);
-        }
-
-        return this.getForm[key].value;
-    }
-
     goToPage(page: number) {
         this.page = page;
-        this.filterProjectsInChunkAndPage();
+        this.filterSortedProjectsInChunkAndPage();
     }
 
-    askBeforeDeleteOne(project: Project) {
-        AlertHelper.ask(`You will delete project <strong>${project.name}</strong>`)
-                   .then((result: SweetAlertResult) => {
-                       if (result.value) {
-                           this.deleteProjectByIds([project.id]);
-                       }
-                   });
-    }
-
-    askBeforeDeleteMulti() {
-        AlertHelper.ask(`You will delete selected projects`)
-                   .then((result: SweetAlertResult) => {
-                       if (result.value) {
-                           this.deleteProjectByIds(this.selectedIds);
-                       }
-                   });
-    }
-
-    private deleteProjectByIds(ids: number[]): void {
-        this._projectService
-            .deleteByIds(ids)
-            .subscribe((data: any) => {
-                AlertHelper.success("Deleted successfully");
-                this.selectedIds = [];
-                this.filterProjectsInChunkAndPage();
+    askBeforeDeleteOne(projectTableRowDto: ProjectTableRowDto) {
+        this._translateService
+            .get(this.i18nLabels.YOU_WILL_DELETE_PROJECT_NAME, {name: projectTableRowDto.name})
+            .subscribe((text: string) => {
+                this._alertService.ask(text)
+                           .then((result: SweetAlertResult) => {
+                               if (result.value) {
+                                   this.deleteProjectByIds([new ProjectDeleteDto(projectTableRowDto)]);
+                               }
+                           });
             });
     }
 
-    selectProject(event: any, id: number): void {
-        this.selectedIds = this.selectedIds.filter(item => item !== id);
+    askBeforeDeleteMulti() {
+        this._translateService
+            .get(this.i18nLabels.YOU_WILL_DELETE_SELECTED_PROJECTS)
+            .subscribe((text: string) => {
+                this._alertService.ask(text)
+                           .then((result: SweetAlertResult) => {
+                               if (result.value) {
+                                   this.deleteProjectByIds(this.selectedProjectDeleteDtos);
+                               }
+                           });
+            });
+    }
+
+    selectProject(event: any, projectTableRowDto: ProjectTableRowDto): void {
+        this.selectedProjectDeleteDtos = this.selectedProjectDeleteDtos
+                                             .filter(item => item.id !== projectTableRowDto.id);
 
         if (event.target.checked) {
-            this.selectedIds.push(id);
+            this.selectedProjectDeleteDtos.push(new ProjectDeleteDto(projectTableRowDto));
         }
+    }
+
+    isProjectSelected(id: number): boolean {
+        let arr: ProjectDeleteDto[] = this.selectedProjectDeleteDtos
+                                            .filter(item => item.id === id);
+
+        return arr.length === 1;
     }
 
     // @formatter:on

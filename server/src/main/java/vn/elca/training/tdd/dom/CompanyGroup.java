@@ -25,7 +25,7 @@ public class CompanyGroup extends AbstractEntity {
     private Employee groupLeader = new Employee();
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn
+    @JoinColumn(name = "companyGroupId")
     private List<Project> projects = new ArrayList<>();
     
     public CompanyGroup(Long id, String groupLeaderVisa) {

@@ -1,4 +1,4 @@
-export class EmployeeDTO {
+export class EmployeeDto {
 
     id: number;
 

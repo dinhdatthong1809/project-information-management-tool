@@ -23,7 +23,7 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
         NavBarComponent,
         SideBarComponent,
         MainComponent,
-        ErrorComponent
+        ErrorComponent,
     ],
     imports: [
         BrowserModule,

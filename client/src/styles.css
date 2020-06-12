@@ -21,6 +21,9 @@
     font-family: "Segoe UI Semibold" !important;
 }
 
+.font-1-5-rem {
+    font-size: 1.5rem
+}
 
 /* Form custom */
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -78,7 +81,6 @@
     border-color: #d9d9d9;
 }
 
-
 /* ng-select custom */
 ng-select .ng-select-container {
     border: 2px solid #cccccc !important;
@@ -102,4 +104,3 @@ ng-select .ng-arrow-wrapper {
 ng-select .ng-clear-wrapper {
     font-weight: bold;
 }
-

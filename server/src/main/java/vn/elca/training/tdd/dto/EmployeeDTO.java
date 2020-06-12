@@ -1,10 +1,10 @@
 package vn.elca.training.tdd.dto;
 
-import lombok.Getter;
+import lombok.Data;
 import vn.elca.training.tdd.dom.Employee;
 
-@Getter
-public class EmployeeDTO {
+@Data
+public class EmployeeDto {
     
     private Long id;
     
@@ -12,7 +12,7 @@ public class EmployeeDTO {
     
     private String name;
     
-    public EmployeeDTO(Employee employee) {
+    public EmployeeDto(Employee employee) {
         this.id = employee.getId();
         this.visa = employee.getVisa();
         this.name = employee.getLastName() + " " + employee.getFirstName();
